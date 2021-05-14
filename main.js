@@ -1,5 +1,5 @@
 const express = require("express");
-const {uuid} = require('uuidv4');
+const { uuid } = require('uuidv4');
 const app = express();
 const port = 5000;
 app.use(express.json());
@@ -68,11 +68,26 @@ app.get("/articles/:id", (req, res) => {
 
 app.post("/articles", (req, res) => {
     res.status(201);
-    const newArt = { title: req.body.title, description: req.body.description, author: req.body.author,id:uuid()};
+    const newArt = { title: req.body.title, description: req.body.description, author: req.body.author, id: uuid() };
     articles.push(newArt)
     res.json(newArt)
 })
 
+app.put("/articles/:id", (req, res) => {
+    const id = req.params.id
+    const found = articles.find((element) => {
+        return element.id == id;
+    });
+    if (found) {
+        res.status(201);
+        const updateArt = { title: req.body.title, description: req.body.description, author: req.body.author, id: id };
+        res.json(updateArt)
+    } else {
+        res.status(404);
+        res.json("not found");
+    }
+
+})
 
 app.listen(port, () => {
     console.log(`project_3 listening at http://localhost:${port}`);
