@@ -28,17 +28,18 @@ const articles = [
     },
 ];
 
-app.get("/articles", (req, res) => {
+const getAllArticles = (req, res) => {
     res.status(200);
     res.json(articles);
-})
+}
 
-app.get("/articles/search_1", (req, res) => {
+const getArticlesByAuthor = (req, res) => {
     res.status(200);
     const author = req.query.author
     const found = articles.filter((element) => {
         return element.author === author;
     });
+
 
     if (found) {
         res.status(200);
@@ -47,10 +48,10 @@ app.get("/articles/search_1", (req, res) => {
         res.status(404);
         res.json("not found");
     }
-})
+}
 
 
-app.get("/articles/:id", (req, res) => {
+const getAnArticleById = (req, res) => {
     res.status(200);
     const id = req.params.id
     const found = articles.find((element) => {
@@ -64,16 +65,16 @@ app.get("/articles/:id", (req, res) => {
         res.status(404);
         res.json("not found");
     }
-});
+};
 
-app.post("/articles", (req, res) => {
+const createNewArticle = (req, res) => {
     res.status(201);
     const newArt = { title: req.body.title, description: req.body.description, author: req.body.author, id: uuid() };
     articles.push(newArt)
     res.json(newArt)
-})
+}
 
-app.put("/articles/:id", (req, res) => {
+const updateAnArticleById = (req, res) => {
     const id = req.params.id
     const found = articles.find((element) => {
         return element.id == id;
@@ -86,10 +87,10 @@ app.put("/articles/:id", (req, res) => {
         res.status(404);
         res.json("not found");
     }
-})
+}
 
 
-app.delete("/articles/:id", (req, res) => {
+const deleteArticleById = (req, res) => {
     const id = req.params.id
     let index;
     const found = articles.find((element, i) => {
@@ -104,8 +105,31 @@ app.delete("/articles/:id", (req, res) => {
         res.status(404);
         res.json("not found");
     }
+}
 
-})
+
+const deleteArticlesByAuthor = (req, res) => {
+    const author = req.body.author
+    const found = articles.map((element, index) => {
+        if (element.author === author) {
+            articles.splice(index, 1)
+        } else {
+            res.status(404);
+            res.json("not found");
+        }
+    });
+    res.status(200);
+    res.json({ success: "true", message: `Success delete all the articles for the author => ${author}` })
+}
+
+app.get("/articles", getAllArticles);
+app.get("/articles/search_1", getArticlesByAuthor);
+app.get("/articles/search_2", getAnArticleById);
+app.post("/articles", createNewArticle);
+app.get("/articles/search_1", getArticlesByAuthor);
+app.put("/articles/:id", updateAnArticleById);
+app.delete("/articles/:id", deleteArticleById);
+app.delete("/articles", deleteArticlesByAuthor);
 
 app.listen(port, () => {
     console.log(`project_3 listening at http://localhost:${port}`);
