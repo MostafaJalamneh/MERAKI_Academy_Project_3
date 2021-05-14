@@ -31,6 +31,23 @@ app.get("/articles", (req, res) => {
     res.json(articles);
 })
 
+app.get("/articles/search_1", (req, res) => {
+    res.status(200);
+    const author = req.query.author
+    const found = articles.filter((element) => {
+        return element.author === author;
+    });
+
+    if (found) {
+        res.status(200);
+        res.json(found);
+    } else {
+        res.status(404);
+        res.json("not found");
+    }
+})
+
+
 app.get("/articles/:id", (req, res) => {
     res.status(200);
     const id = req.params.id
@@ -46,7 +63,6 @@ app.get("/articles/:id", (req, res) => {
         res.json("not found");
     }
 });
-
 
 
 app.listen(port, () => {
