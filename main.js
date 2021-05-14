@@ -86,6 +86,24 @@ app.put("/articles/:id", (req, res) => {
         res.status(404);
         res.json("not found");
     }
+})
+
+
+app.delete("/articles/:id", (req, res) => {
+    const id = req.params.id
+    let index;
+    const found = articles.find((element, i) => {
+        index = i;
+        return element.id == id;
+    });
+    if (found) {
+        res.status(201);
+        articles.splice(index, 1)
+        res.json({ success: "true", message: `Success Delete article with id => ${id}` })
+    } else {
+        res.status(404);
+        res.json("not found");
+    }
 
 })
 
