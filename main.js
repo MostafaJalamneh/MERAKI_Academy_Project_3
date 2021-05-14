@@ -31,6 +31,24 @@ app.get("/articles", (req, res) => {
     res.json(articles);
 })
 
+app.get("/articles/:id", (req, res) => {
+    res.status(200);
+    const id = req.params.id
+    const found = articles.find((element) => {
+        return element.id == id;
+    });
+
+    if (found) {
+        res.status(200);
+        res.json(found);
+    } else {
+        res.status(404);
+        res.json("not found");
+    }
+});
+
+
+
 app.listen(port, () => {
     console.log(`project_3 listening at http://localhost:${port}`);
 });
