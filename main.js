@@ -103,20 +103,18 @@ const deleteArticleById = (req, res) => {
         res.json({ success: "true", message: `Success Delete article with id => ${id}` })
     } else {
         res.status(404);
-        res.json("not found");
     }
 }
 
 
 const deleteArticlesByAuthor = (req, res) => {
     const author = req.body.author
-    const found = articles.map((element, index) => {
+    const found = articles.filter((element, index) => {
         if (element.author === author) {
             articles.splice(index, 1)
-        } else {
+        } else { 
             res.status(404);
-            res.json("not found");
-        }
+        } 
     });
     res.status(200);
     res.json({ success: "true", message: `Success delete all the articles for the author => ${author}` })
@@ -126,7 +124,6 @@ app.get("/articles", getAllArticles);
 app.get("/articles/search_1", getArticlesByAuthor);
 app.get("/articles/search_2", getAnArticleById);
 app.post("/articles", createNewArticle);
-app.get("/articles/search_1", getArticlesByAuthor);
 app.put("/articles/:id", updateAnArticleById);
 app.delete("/articles/:id", deleteArticleById);
 app.delete("/articles", deleteArticlesByAuthor);
