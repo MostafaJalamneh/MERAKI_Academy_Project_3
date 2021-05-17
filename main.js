@@ -1,5 +1,7 @@
 const express = require("express");
 const { uuid } = require('uuidv4');
+const {User,Article} = require("./schema");
+const db = require("./db");
 const app = express();
 const port = 5000;
 app.use(express.json());
@@ -112,12 +114,18 @@ const deleteArticlesByAuthor = (req, res) => {
     const found = articles.filter((element, index) => {
         if (element.author === author) {
             articles.splice(index, 1)
-        } else { 
+        } else {
             res.status(404);
-        } 
+        }
     });
     res.status(200);
     res.json({ success: "true", message: `Success delete all the articles for the author => ${author}` })
+}
+
+const createNewAuthor = (req, res) => {
+    const { firstName, lastName, age, country, email, password } = req.body
+    const aut = new User({ firstName, lastName, age, country, email,password })
+    aut.save().then(result => {res.status(201); res.json(result) }).catch(err => { res.send(err) })
 }
 
 app.get("/articles", getAllArticles);
@@ -127,6 +135,7 @@ app.post("/articles", createNewArticle);
 app.put("/articles/:id", updateAnArticleById);
 app.delete("/articles/:id", deleteArticleById);
 app.delete("/articles", deleteArticlesByAuthor);
+app.post("/users", createNewAuthor);
 
 app.listen(port, () => {
     console.log(`project_3 listening at http://localhost:${port}`);
