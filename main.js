@@ -115,8 +115,18 @@ const login = (req, res) => {
 }
 
 const createNewComment = async (req, res) => {
-   
-}
+    const id = req.params.id;
+    const { comment, commenter } = req.body;
+    const comm = new Comment({ comment, commenter });
+    let commId;
+
+    comm.save()
+        .then((result) => {
+            commId = result._id;
+            Articles.updateOne({ _id: id }, { $push: { comments: commId } }).then(() => { res.json(result); });
+        })
+        .catch((err) => { res.json(err); });
+};
 
 app.get("/articles", getAllArticles);
 app.get("/articles/search_1", getArticlesByAuthor);
