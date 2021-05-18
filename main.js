@@ -1,6 +1,6 @@
 const express = require("express");
 const { uuid } = require('uuidv4');
-const { User, Article, Articles } = require("./schema");
+const { User, Comment, Articles } = require("./schema");
 const db = require("./db");
 const app = express();
 const port = 5000;
@@ -80,17 +80,14 @@ const updateAnArticleById = (req, res) => {
 
 
 const deleteArticleById = (req, res) => {
-    Articles.findOneAndDelete({ id: req.params.id })
+    Articles.findByIdAndRemove({ _id: req.params.id })
         .then((result) => { res.send("Deleted Complete"); })
         .catch((err) => { res.status = 404; res.send(err); })
 }
 
 
-const deleteArticlesByAuthor = async (req, res) => {
-    let art1;
-    await User.findOne({ firstName: req.body.author })
-        .then((result) => { art1 = result.id; })
-    Articles.deleteOne({ author: art1 })
+const deleteArticlesByAuthor = (req, res) => {
+    Articles.deleteMany({ author: req.body.author })
         .then((result) => { res.send("Deleted"); })
         .catch((err) => { res.send(err); });
 }
@@ -101,10 +98,10 @@ const createNewAuthor = (req, res) => {
     aut.save().then(result => { res.status(201); res.json(result) }).catch(err => { res.send(err) })
 }
 
-const login = async (req, res) => {
+const login = (req, res) => {
     User.find({ email: req.body.email, password: req.body.password })
         .then((result) => {
-            if (result.length > 0) {
+            if (result) {
                 res.status(200);
                 res.json("Valid login credentials")
             } else {
@@ -112,19 +109,13 @@ const login = async (req, res) => {
                 res.json("Invalid login credentials")
             }
         })
+        .catch((err) => {
+            res.json(err)
+        })
 }
 
-const createNewComment = (req, res) => {
-    const { comment, commenter } = req.body;
-    const newComment = new Comment({ comment, commenter });
-    newComment
-        .save()
-        .then((result) => {
-            Articles.findOneAndUpdate({ _id: req.params.id }, { $push: { comments: result._id } }, { new: true })
-                .catch((err) => { res.json(err); });
-            res.status(201); res.json(result);
-        })
-        .catch((err) => { res.json(err) });
+const createNewComment = async (req, res) => {
+   
 }
 
 app.get("/articles", getAllArticles);
@@ -132,7 +123,7 @@ app.get("/articles/search_1", getArticlesByAuthor);
 app.get("/articles/search_2", getAnArticleById);
 app.post("/articles", createNewArticle);
 app.put("/articles/:id", updateAnArticleById);
-app.delete("/articles/:id", deleteArticleById); 
+app.delete("/articles/:id", deleteArticleById);
 app.delete("/articles", deleteArticlesByAuthor);
 app.post("/users", createNewAuthor);
 app.post("/login", login);

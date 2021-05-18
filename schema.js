@@ -8,8 +8,14 @@ const articles = new mongoose.Schema({
     title: { type: String }, description: { type: String },
     author: { type: mongoose.Schema.ObjectId, ref: "User" }
 })
+const comment = new mongoose.Schema({
+    comment: { type: String },
+    commenter: { type: mongoose.Schema.ObjectId, ref: "User" },
+  });
 
 const User = mongoose.model("User", users);
 const Articles = mongoose.model("Articles", articles);
+const Comment = mongoose.model("Comment", comment);
 module.exports.User = User;
 module.exports.Articles = Articles;
+module.exports.Comment = Comment;
