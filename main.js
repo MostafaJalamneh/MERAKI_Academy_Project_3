@@ -127,6 +127,18 @@ const login = (req, res) => {
 }
 
 const createNewComment = async (req, res) => {
+    const authentication = (req, res, next) => {
+        const token = req.headers.authorization.split(" ")[1];
+        jwt.verify(token, secret, (err, result) => {
+            if (err) {
+                res.status(403)
+                return res.json(err);
+            }else{
+                next()
+            }
+        });
+
+    }
     const id = req.params.id;
     const { comment, commenter } = req.body;
     const comm = new Comment({ comment, commenter });
