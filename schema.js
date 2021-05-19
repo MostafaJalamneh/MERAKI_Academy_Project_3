@@ -4,7 +4,8 @@ const salt = 10;
 
 const users = new mongoose.Schema({
     firstName: { type: String }, lastName: { type: String },
-    age: { type: Number }, country: { type: String }, email: { type: String, required: true, unique: true }, password: { type: String }
+    age: { type: Number }, country: { type: String }, email: { type: String, required: true, unique: true }, password: { type: String },
+    role:{type: mongoose.Schema.ObjectId, ref: "Roles"}
 })
 const articles = new mongoose.Schema({
     title: { type: String }, description: { type: String },
