@@ -108,7 +108,10 @@ const login = (req, res) => {
             if (result) {
                 bcrypt.compare(req.body.password, result.password, (err, result1) => {
                     if (result1) {
-                        const payload = { userId: result._id, country: result.country };
+                        const payload = {
+                            userId: result._id, country: result.country,
+                            role: { role: 'admin', permissions: ['MANAGE_USERS', 'CREATE_COMMENTS'] }
+                        };
                         const options = { expiresIn: '20000' };
                         const token = jwt.sign(payload, secret, options);
                         res.json(token);
@@ -131,16 +134,16 @@ const authentication = (req, res, next) => {
         if (err) {
             return res.json(err);
         }
-        if(userId){
+        if (userId) {
             next()
-        }else{
-            res.json({message:"The token is forbidden",status:403})
+        } else {
+            res.json({ message: "The token is forbidden", status: 403 })
         }
     });
 
 }
 
-const createNewComment =(authentication, async (req, res) => {
+const createNewComment = (authentication, async (req, res) => {
     const id = req.params.id;
     const { comment, commenter } = req.body;
     const comm = new Comment({ comment, commenter });
