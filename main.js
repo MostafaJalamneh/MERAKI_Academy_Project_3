@@ -105,8 +105,12 @@ const login = (req, res) => {
     User.find({ email: req.body.email, password: req.body.password })
         .then((result) => {
             if (result) {
+                bcrypt.compare(password, hashedPassword, (err, result) => {
+                    console.log(result);
+                });
                 res.status(200);
                 res.json("Valid login credentials")
+                
             } else {
                 res.status(401);
                 res.json("Invalid login credentials")
