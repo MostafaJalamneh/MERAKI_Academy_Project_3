@@ -3,6 +3,7 @@ const { uuid } = require('uuidv4');
 const { User, Comment, Articles } = require("./schema");
 const db = require("./db");
 const app = express();
+require("dotenv").config();
 const port = 5000;
 app.use(express.json());
 
