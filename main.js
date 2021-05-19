@@ -109,7 +109,7 @@ const login = (req, res) => {
                 bcrypt.compare(req.body.password, result.password, (err, result1) => {
                     if (result1) {
                         const payload = { userId: result._id, country: result.country };
-                        const options = { expiresIn: '60m' };
+                        const options = { expiresIn: '20000' };
                         const token = jwt.sign(payload, secret, options);
                         res.json(token);
                     }
@@ -125,20 +125,22 @@ const login = (req, res) => {
         .catch((err) => { res.json(err) });
 
 }
+const authentication = (req, res, next) => {
+    const token = req.headers.authorization.split(" ")[1];
+    jwt.verify(token, secret, (err, result) => {
+        if (err) {
+            return res.json(err);
+        }
+        if(userId){
+            next()
+        }else{
+            res.json({message:"The token is forbidden",status:403})
+        }
+    });
 
-const createNewComment = async (req, res) => {
-    const authentication = (req, res, next) => {
-        const token = req.headers.authorization.split(" ")[1];
-        jwt.verify(token, secret, (err, result) => {
-            if (err) {
-                res.status(403)
-                return res.json(err);
-            }else{
-                next()
-            }
-        });
+}
 
-    }
+const createNewComment =(authentication, async (req, res) => {
     const id = req.params.id;
     const { comment, commenter } = req.body;
     const comm = new Comment({ comment, commenter });
@@ -150,7 +152,7 @@ const createNewComment = async (req, res) => {
             Articles.updateOne({ _id: id }, { $push: { comments: commId } }).then(() => { res.json(result); });
         })
         .catch((err) => { res.json(err); });
-};
+});
 
 app.get("/articles", getAllArticles);
 app.get("/articles/search_1", getArticlesByAuthor);
