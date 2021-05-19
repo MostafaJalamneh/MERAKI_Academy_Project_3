@@ -4,6 +4,8 @@ const { User, Comment, Articles } = require("./schema");
 const db = require("./db");
 const app = express();
 require("dotenv").config();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const port = 5000;
 app.use(express.json());
 

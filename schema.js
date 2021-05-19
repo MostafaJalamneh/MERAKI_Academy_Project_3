@@ -11,7 +11,14 @@ const articles = new mongoose.Schema({
 const comment = new mongoose.Schema({
     comment: { type: String },
     commenter: { type: mongoose.Schema.ObjectId, ref: "User" },
-  });
+});
+
+users.pre("save", async function () {
+    this.email = this.email.toLowerCase();
+    bcrypt.hash(this.password, salt, (err, hash) => {
+        this.isModified("password")
+    });
+});
 
 const User = mongoose.model("User", users);
 const Articles = mongoose.model("Articles", articles);
