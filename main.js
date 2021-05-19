@@ -6,6 +6,7 @@ const app = express();
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const secret = process.env.SECRET;
 const port = 5000;
 app.use(express.json());
 
@@ -102,23 +103,27 @@ const createNewAuthor = (req, res) => {
 }
 
 const login = (req, res) => {
-    User.find({ email: req.body.email, password: req.body.password })
+    User.findOne({ email: req.body.email })
         .then((result) => {
             if (result) {
-                bcrypt.compare(password, hashedPassword, (err, result) => {
-                    console.log(result);
+                bcrypt.compare(req.body.password, result.password, (err, result1) => {
+                    if (result1) {
+                        const payload = { userId: result._id, country: result.country };
+                        const options = { expiresIn: '60m' };
+                        const token = jwt.sign(payload, secret, options);
+                        res.json(token);
+                    }
+                    else {
+                        res.json({ message: "The password you’ve entered is incorrect", status: 403 })
+                    }
                 });
-                res.status(200);
-                res.json("Valid login credentials")
-                
-            } else {
-                res.status(401);
-                res.json("Invalid login credentials")
+            }
+            else {
+                res.json({ message: "The email doesn't exist", status: 404 })
             }
         })
-        .catch((err) => {
-            res.json(err)
-        })
+        .catch((err) => { res.json(err) });
+
 }
 
 const createNewComment = async (req, res) => {
