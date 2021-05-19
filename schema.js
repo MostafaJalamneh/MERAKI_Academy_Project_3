@@ -14,15 +14,23 @@ const comment = new mongoose.Schema({
     comment: { type: String },
     commenter: { type: mongoose.Schema.ObjectId, ref: "User" },
 });
+const roles = new mongoose.Schema({
+    role: { type: String },
+    permissions: [{}]
+})
 
 users.pre("save", async function () {
     this.email = this.email.toLowerCase();
     this.password = await bcrypt.hash(this.password, salt);
 });
 
+
 const User = mongoose.model("User", users);
 const Articles = mongoose.model("Articles", articles);
 const Comment = mongoose.model("Comment", comment);
+const Roles = mongoose.model("Roles", roles);
+
 module.exports.User = User;
 module.exports.Articles = Articles;
 module.exports.Comment = Comment;
+module.exports.Roles = Roles;
