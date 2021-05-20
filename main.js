@@ -1,10 +1,10 @@
 const express = require("express");
 const { uuid } = require('uuidv4');
-const { User, Comment, Articles } = require("./schema");
+const { User, Comment, Articles, Roles } = require("./schema");
 const db = require("./db");
 const app = express();
 require("dotenv").config();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt"); 3
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const port = 5000;
@@ -104,15 +104,16 @@ const createNewAuthor = (req, res) => {
 
 const login = (req, res) => {
     User.findOne({ email: req.body.email })
+        .populate("role")
+        .exec()
         .then((result) => {
             if (result) {
                 bcrypt.compare(req.body.password, result.password, (err, result1) => {
                     if (result1) {
                         const payload = {
-                            userId: result._id, country: result.country,
-                            role: { role: 'admin', permissions: ['MANAGE_USERS', 'CREATE_COMMENTS'] }
+                            userId: result._id, country: result.country, role: result.role
                         };
-                        const options = { expiresIn: '20000' };
+                        const options = { expiresIn: '1h' };
                         const token = jwt.sign(payload, secret, options);
                         res.json(token);
                     }
@@ -129,19 +130,34 @@ const login = (req, res) => {
 
 }
 const authentication = (req, res, next) => {
+    if (!req.headers.authorization) {
+        res.status(403)
+        res.json({ message: "Forbidden" })
+        return;
+    }
     const token = req.headers.authorization.split(" ")[1];
-    jwt.verify(token, secret, (err, result) => {
-        if (err) {
-            return res.json(err);
-        }
-        if (userId) {
+    try {
+        const pToken = jwt.verify(token, process.env.SECRET);
+        req.token = pToken
+        next()
+    } catch (err) {
+        res.status(403)
+        res.json({ message: "Forbidden" })
+    }
+};
+const authorization = (string) => {
+
+    fun = (req, res, next) => {
+        if (token.permissions === string) {
             next()
         } else {
-            res.json({ message: "The token is forbidden", status: 403 })
+            res.status(403)
+            res.json({ message: "Forbidden" })
         }
-    });
-
+    }
 }
+
+
 
 const createNewComment = (authentication, async (req, res) => {
     const id = req.params.id;
