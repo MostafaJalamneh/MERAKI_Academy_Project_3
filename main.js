@@ -60,6 +60,15 @@ const getAnArticleById = (req, res) => {
         .catch((err) => { res.status(404); res.json(err); });
 };
 
+const createRole = (req, res) => {
+    const { role, permissions } = req.body;
+    const newRole = new Role({ role, permissions });
+    newRole
+        .save()
+        .then((result) => { res.status(201); res.json(result); })
+        .catch((err) => { res.json(err); });
+}
+
 const createNewArticle = async (req, res) => {
     res.status(201);
     const { title, description, author } = req.body
@@ -139,6 +148,7 @@ const authentication = (req, res, next) => {
     try {
         const pToken = jwt.verify(token, process.env.SECRET);
         req.token = pToken
+        authorization("CREATE_COMMENT")
         next()
     } catch (err) {
         res.status(403)

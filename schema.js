@@ -17,7 +17,7 @@ const comment = new mongoose.Schema({
 });
 const roles = new mongoose.Schema({
     role: { type: String },
-    permissions: [{}]
+    permissions: [{type: String}]
 })
 
 users.pre("save", async function () {
