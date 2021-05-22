@@ -60,15 +60,6 @@ const getAnArticleById = (req, res) => {
         .catch((err) => { res.status(404); res.json(err); });
 };
 
-const createRole = (req, res) => {
-    const { role, permissions } = req.body;
-    const newRole = new Role({ role, permissions });
-    newRole
-        .save()
-        .then((result) => { res.status(201); res.json(result); })
-        .catch((err) => { res.json(err); });
-}
-
 const createNewArticle = async (req, res) => {
     res.status(201);
     const { title, description, author } = req.body
@@ -104,6 +95,16 @@ const deleteArticlesByAuthor = (req, res) => {
         .then((result) => { res.send("Deleted"); })
         .catch((err) => { res.send(err); });
 }
+
+const createRole = (req, res) => {
+    const { role, permissions } = req.body;
+    const newRole = new Roles({ role, permissions });
+    newRole
+        .save()
+        .then((result) => { res.status(201); res.json(result); })
+        .catch((err) => { res.json(err); });
+}
+
 
 const createNewAuthor = (req, res) => {
     const { firstName, lastName, age, country, email, password } = req.body
@@ -148,7 +149,7 @@ const authentication = (req, res, next) => {
     try {
         const pToken = jwt.verify(token, process.env.SECRET);
         req.token = pToken
-        authorization("CREATE_COMMENT")
+        //authorization("CREATE_COMMENT")
         next()
     } catch (err) {
         res.status(403)
@@ -157,16 +158,21 @@ const authentication = (req, res, next) => {
 };
 const authorization = (string) => {
 
-    fun = (req, res, next) => {
-        if (token.permissions === string) {
-            next()
-        } else {
-            res.status(403)
-            res.json({ message: "Forbidden" })
-        }
-    }
-}
-
+    return (req, res, next) => {
+        Roles.findOne({ _id: req.token.role })
+            .then((result) => {
+                let permissions = result.permissions;
+                const found = permissions.find((elem) => {
+                    return elem === string;
+                });
+                if (found) {
+                    next();
+                } else {
+                    res.json({ message: "Forbidden ", status: 403 });
+                }
+            });
+    };
+};
 
 
 const createNewComment = (authentication, async (req, res) => {
@@ -192,7 +198,12 @@ app.delete("/articles/:id", deleteArticleById);
 app.delete("/articles", deleteArticlesByAuthor);
 app.post("/users", createNewAuthor);
 app.post("/login", login);
-app.post("/articles/:id/comments", createNewComment);
+app.post(
+    "/articles/:id/comments",
+    authentication,
+    authorization("CREATE_COMMENT"),
+    createNewComment
+); app.post("/role", createRole)
 
 app.listen(port, () => {
     console.log(`project_3 listening at http://localhost:${port}`);
