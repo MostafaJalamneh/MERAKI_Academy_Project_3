@@ -4,7 +4,7 @@ const { User, Comment, Articles, Roles } = require("./schema");
 const db = require("./db");
 const app = express();
 require("dotenv").config();
-const bcrypt = require("bcrypt"); 3
+const bcrypt = require("bcrypt"); 
 const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 const port = 5000;
@@ -77,10 +77,13 @@ const createNewArticle = async (req, res) => {
 }
 
 const updateAnArticleById = (req, res) => {
-    Articles.updateOne({ id: req.params._id }, { title: req.body.title, description: req.body.description } = req.body, { new: true })
-        .then((result) => { res.json(result) })
-        .catch((err) => { res.status = 404; res.json(err) });
+    const id = req.params.id;
+    const { title, description } = req.body;
+    Articles.findOneAndUpdate({ author: id },{ title, description },{ new: true })
+        .then((result) => { res.status(200).json(result); })
+        .catch((err) => { res.json(err); });
 }
+
 
 
 const deleteArticleById = (req, res) => {
