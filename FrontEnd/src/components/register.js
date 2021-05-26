@@ -12,6 +12,7 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [status, setStatus] = useState("");
+    const [statusF, setStatusf] = useState("");
 
     const register = () => {
         const reg = { firstName: fname, lastName: lname, age: age, country: country, email: email, password: password };
@@ -21,6 +22,7 @@ const Register = () => {
                 setStatus(true)
             })
             .catch((err) => {
+                setStatusf(false)
                 console.log(err);
             })
     }
@@ -50,7 +52,9 @@ const Register = () => {
                 <button className="registerButton" onClick={register}>Register</button>
                 <div>
                     {status ? <p className="successMessage">The user has been created successfully</p>
-                        : <p className="failMessage"> Error happened while register, please try again</p>}
+                        :"" }
+                         {statusF ?<p className="failMessage"> Error happened while register, please try again</p>
+                        :"" }
                 </div>
             </div>
         </>
@@ -58,3 +62,5 @@ const Register = () => {
 };
 
 export default Register
+
+//<p className="failMessage"> Error happened while register, please try again</p>
