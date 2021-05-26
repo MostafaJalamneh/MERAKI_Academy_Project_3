@@ -1,0 +1,36 @@
+.mainStyle {
+  border: solid 3px green;
+  padding: 5px;
+}
+.navigation {
+  border: solid 3px red;
+  padding: 3px;
+  margin-bottom: 5px;
+}
+.registerStyle {
+  border: solid 3px blue;
+  padding: 3px;
+}
+.inputStyle {
+  padding: 2px;
+  margin-bottom: 7px;
+  width: 250px;
+}
+.registerButton {
+  width: 260px;
+  height: 30px;
+  color: white;
+  background-color: rgb(13, 110, 253);
+}
+.successMessage {
+  color: rgb(108, 130, 89);
+  background-color: rgb(209, 231, 221);
+  width: 260px;
+  height: 50px;
+}
+.failMessage {
+  width: 260px;
+  height: 50px;
+  background-color: rgb(248, 215, 218);
+  color: rgb(139, 90, 79);
+}
