@@ -6,6 +6,7 @@ const Navigation = () => {
       <div className="navigation" style={{ display: "flex", gap: "16px" }}>
         <Link to="/login"> Login </Link>
         <Link to="/register"> Register </Link>
+        <Link to="/dashboard"> Dashboard </Link>
       </div>
     );
   };
