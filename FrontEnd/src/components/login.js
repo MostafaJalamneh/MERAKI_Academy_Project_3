@@ -16,7 +16,7 @@ const Login = ({setToken}) => {
       .post("http://localhost:5000/login", logi)
       .then((response) => {
         setToken(response.data.token);
-        history.push("/dashboard")
+        history.push("/newArticle")
       })
       .catch((err) => { 
         console.log(err); 
