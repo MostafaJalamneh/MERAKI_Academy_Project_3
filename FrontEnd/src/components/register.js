@@ -20,6 +20,7 @@ const Register = () => {
             .post("http://localhost:5000/users", reg)
             .then((response) => {
                 setStatus(true)
+                history.push("/login")
             })
             .catch((err) => {
                 setStatusf(false)
@@ -52,9 +53,9 @@ const Register = () => {
                 <button className="registerButton" onClick={register}>Register</button>
                 <div>
                     {status ? <p className="successMessage">The user has been created successfully</p>
-                        :"" }
-                         {statusF ?<p className="failMessage"> Error happened while register, please try again</p>
-                        :"" }
+                        : ""}
+                    {statusF ? <p className="failMessage"> Error happened while register, please try again</p>
+                        : ""}
                 </div>
             </div>
         </>

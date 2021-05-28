@@ -1,14 +1,19 @@
 import React from 'react';
 import { Switch, Route, Link, useParams, useHistory } from 'react-router-dom';
 
-const Navigation = () => {
-    return (
-      <div className="navigation" style={{ display: "flex", gap: "16px" }}>
-        <Link to="/login"> Login </Link>
-        <Link to="/register"> Register </Link>
-        <Link to="/dashboard"> Dashboard </Link>
-      </div>
-    );
-  };
+const Navigation = (props) => {
+  return (
+    <>
+      {!props.tokenS ? <div className="Navigation" style={{ display: 'flex', gap: '16px' }}>
+        <Link to="/login">Login</Link>
+        <Link to="/register">Register</Link>
+      </div> : ""}
 
-  export default Navigation
+      {props.tokenS ? <div className="Navigation" style={{ display: 'flex', gap: '16px' }}>
+        <Link to="/dashboard">Dashboard</Link>
+      </div> : ""}
+    </>
+  );
+};
+
+export default Navigation
