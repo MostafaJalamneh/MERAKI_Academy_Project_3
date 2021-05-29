@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from "axios";
-import { Switch, Route, Link, useParams, Redirect, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 
-const Login = ({setToken}) => {
+const Login = ({ setToken }) => {
   const history = useHistory();
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -13,13 +13,13 @@ const Login = ({setToken}) => {
 
   const login = () => {
     axios
-      .post("http://localhost:5000/login", logi)
+      .post('http://localhost:5000/login', logi)
       .then((response) => {
         setToken(response.data.token);
         history.push("/newArticle")
       })
-      .catch((err) => { 
-        console.log(err); 
+      .catch((err) => {
+        console.log(err);
       })
   }
   return (

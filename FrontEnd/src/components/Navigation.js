@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route, Link, useParams, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Navigation = (props) => {
   return (

@@ -1,5 +1,5 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { Switch, Route, Link, useParams, useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import axios from "axios";
 
 
@@ -20,7 +20,6 @@ const Register = () => {
             .post("http://localhost:5000/users", reg)
             .then((response) => {
                 setStatus(true)
-                history.push("/login")
             })
             .catch((err) => {
                 setStatusf(false)
